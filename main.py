@@ -367,7 +367,7 @@ def generate_856_from_output(output: dict) -> str:
 
     output.extend([SE, GE, IEA])
 
-    output_str = "\n".join(["*".join([str(x) for x in y]) for y in output])
+    output_str = "\n".join(["*".join([str(x) for x in y]) for y in output]) + "\n"
 
     FILENAME = check_for_key("cust_po", "", H)
     # write to file
