@@ -48,21 +48,17 @@ def parse_856_raw_export(file: str):
 
     asn = []
 
-    start = False
     order = ""
 
     for line in input_str.splitlines():
-        if line.startswith('"H"~'):
-            if line.startswith('"H"~"HENRYSCHEIN"') and order == "":
-                start = True
-            else:
-                start = False
-                if order != "":
-                    asn.append(order)
-                    order = ""
+        if line.startswith('"H"~"HENRYSCHEIN"') and order != "":
+            asn.append(order)
+            order = ""
 
-        if start:
-            order += line + "\n"
+        order += line + "\n"
+
+    asn.append(order)
+    order = ""
 
     return asn
 
@@ -373,17 +369,20 @@ def generate_856_from_output(output: dict) -> str:
 
     output_str = "\n".join(["*".join([str(x) for x in y]) for y in output])
 
-    FILENAME = check_for_key("cust_po", "", H) + "-" + st_id
+    FILENAME = check_for_key("cust_po", "", H)
     # write to file
     # with open(rf"c:\\temp\\{FILENAME}.edi", "w", encoding="utf-8") as f:
     #     f.write(output_str)
 
     insert(FILENAME, output_str, f"{date} {time}")
 
-    with open(
-        rf"/mnt/evision_out/henry schein/{FILENAME}.edi", "w", encoding="utf-8"
-    ) as f:
-        f.write(output_str)
+    try:
+        with open(
+            rf"/mnt/evision_out/henry schein/{FILENAME}.edi", "w", encoding="utf-8"
+        ) as f:
+            f.write(output_str)
+    except:
+        print("Failed to write to file")
 
     return output_str
 
@@ -417,8 +416,6 @@ if __name__ == "__main__":
             file_path = sys.argv[2]
             assert os.path.exists(file_path), "File does not exist"
             assert os.path.isfile(file_path), "File is not a file"
-
-            print(file_path)
 
             asn = parse_856_raw_export(file_path)
 
