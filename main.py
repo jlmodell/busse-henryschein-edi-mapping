@@ -6,6 +6,27 @@ from datetime import datetime
 
 from maps.eight_five_five import input_map
 
+import apsw
+
+
+conn = apsw.Connection("hs_asn.db")
+# create table if not exists asn with po as primary key document as text and date sent as text
+conn.cursor().execute(
+    "CREATE TABLE IF NOT EXISTS asn (po TEXT PRIMARY KEY, document TEXT, date_sent TEXT)"
+)
+
+
+def insert(po: str, document: str, date_sent: str) -> None:
+    global conn
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO asn (po, document, date_sent) values (?, ?, ?)",
+            (po, document, date_sent),
+        )
+    except apsw.ConstraintError as e:
+        print(e)
+
 
 async def get_lot_by_lot(lot: str) -> str:
     """Get the lot by lot number and return expiration date"""
@@ -356,6 +377,8 @@ def generate_856_from_output(output: dict) -> str:
     # write to file
     # with open(rf"c:\\temp\\{FILENAME}.edi", "w", encoding="utf-8") as f:
     #     f.write(output_str)
+
+    insert(FILENAME, output_str, f"{date} {time}")
 
     with open(
         rf"/mnt/evision_out/henry schein/{FILENAME}.edi", "w", encoding="utf-8"
