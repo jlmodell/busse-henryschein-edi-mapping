@@ -354,7 +354,12 @@ def generate_856_from_output(output: dict) -> str:
 
     FILENAME = check_for_key("cust_po", "", H)
     # write to file
-    with open(rf"c:\\temp\\{FILENAME}.edi", "w", encoding="utf-8") as f:
+    # with open(rf"c:\\temp\\{FILENAME}.edi", "w", encoding="utf-8") as f:
+    #     f.write(output_str)
+
+    with open(
+        rf"/mnt/evision_out/henry schein/{FILENAME}.edi", "w", encoding="utf-8"
+    ) as f:
         f.write(output_str)
 
     return output_str
