@@ -41,7 +41,7 @@ async def get_lot_by_lot(lot: str) -> str:
         return json.get("expiration", None)
 
 
-def parse_856_raw_export(file: str) -> list[str]:
+def parse_856_raw_export(file: str):
     file_path = rf"{file}"
     with open(file_path, "r") as f:
         input_str = f.read()
@@ -417,6 +417,8 @@ if __name__ == "__main__":
             file_path = sys.argv[2]
             assert os.path.exists(file_path), "File does not exist"
             assert os.path.isfile(file_path), "File is not a file"
+
+            print(file_path)
 
             asn = parse_856_raw_export(file_path)
 
