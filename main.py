@@ -373,7 +373,11 @@ def generate_856_from_output(output: dict) -> str:
 
     output_str = "\n".join(["*".join([str(x) for x in y]) for y in output])
 
-    FILENAME = check_for_key("cust_po", "", H)
+    FILENAME = (
+        check_for_key("cust_po", "", H)
+        + "-"
+        + generate("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5)
+    )
     # write to file
     # with open(rf"c:\\temp\\{FILENAME}.edi", "w", encoding="utf-8") as f:
     #     f.write(output_str)
